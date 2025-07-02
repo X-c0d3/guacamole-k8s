@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ssl-cert-app
+  namespace: default
+spec:
+  dnsNames:
+    - mydomain.no-ip.org
+  secretName: letsencrypt-app-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
