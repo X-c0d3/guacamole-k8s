@@ -1,5 +1,52 @@
 Apache Guacamole (clientless remote desktop gateway) on K8s setup
 
+
+--- Setup basic auth on ingress --
+
+
+sudo apt update
+sudo apt install apache2-utils
+
+
+
+htpasswd -c auth <username>
+
+
+kubectl create secret generic basic-auth --from-file=auth -n <namespace>
+kubectl get secret basic-auth -o yaml -n <namespace>
+
+
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: <namespace>
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Guacamole"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mydomain.no-ip.org
+      secretName: letsencrypt-app-tls
+  rules:
+  - host: mydomain.no-ip.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: guacamole
+            port:
+              number: 80
+
 <p float="center">
 <img src="https://github.com/X-c0d3/guacamole-k8s/blob/main/screenshot/screenshot1.jpg">
 <img src="https://github.com/X-c0d3/guacamole-k8s/blob/main/screenshot/screenshot2.jpg">
