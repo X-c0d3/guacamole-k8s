@@ -1,6 +1,6 @@
 Apache Guacamole (clientless remote desktop gateway) on K8s setup
 
-
+```
 --- Setup basic auth on ingress --
 
 
@@ -17,7 +17,7 @@ kubectl get secret basic-auth -o yaml -n <namespace>
 
 
 
-
+--
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -46,6 +46,7 @@ spec:
             name: guacamole
             port:
               number: 80
+```
 
 <p float="center">
 <img src="https://github.com/X-c0d3/guacamole-k8s/blob/main/screenshot/screenshot1.jpg">
